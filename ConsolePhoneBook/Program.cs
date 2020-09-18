@@ -11,6 +11,12 @@ namespace ConsolePhoneBook
         static void Main(string[] args)
         {
             PhoneBookManager manager = new PhoneBookManager();
+            
+
+            PhoneBookManager manager2 = new PhoneBookManager();
+            
+            Console.WriteLine(manager.ToString());
+            Console.WriteLine(manager2.ToString());
 
             while (true)
             {
