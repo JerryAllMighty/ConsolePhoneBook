@@ -40,31 +40,21 @@ namespace ConsolePhoneBook
 
         public virtual void ShowPhoneInfo()
         {
-            Console.WriteLine("name" + this.name);
-            Console.WriteLine("\t phonenumber" + this.phonenumber);
+            Console.WriteLine("name : " + this.name);
+            Console.WriteLine("phonenumber : " + this.phonenumber);
             if (birth != null)
-            Console.WriteLine("birth" + this.birth);
+            Console.WriteLine("birth : " + this.birth);
             Console.WriteLine();
         }
-
-        public override string ToString()
-        {
-            return base.ToString();
-        }
-
-        //ToSTring()를 오버라이드 해서 폰 매니저해서 사용해보기
-
-
-
     }
 
     public class PhoneUnivInfo : PhoneInfo
     {
         string major;
-        int year;
+        string year;
 
 
-        public PhoneUnivInfo(string name, string phonenumber, string birth, string major, int year) : base(name, phonenumber, birth)
+        public PhoneUnivInfo(string name, string phonenumber, string birth, string major, string year) : base(name, phonenumber, birth)
         {
             this.major = major;
             this.year = year;
@@ -75,7 +65,7 @@ namespace ConsolePhoneBook
         public override void ShowPhoneInfo()
         {
             base.ShowPhoneInfo();
-            Console.WriteLine($"전공은{major}이고, 학번은 {year}입니다.");
+            Console.WriteLine($"전공은 {major}이고, 학번은 {year}입니다.");
 
         }
 
