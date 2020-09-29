@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsolePhoneBook
-{
+{    
     public class PhoneBookManager
     {
         public override string ToString()
@@ -18,6 +20,8 @@ namespace ConsolePhoneBook
         const int MAX_CNT = 100;
         PhoneInfo[] infoStorage = new PhoneInfo[MAX_CNT];
         int curCnt = 0;
+      
+        
 
         public string Hobby { get; set; }
         public string Food { get; set; }
@@ -34,6 +38,37 @@ namespace ConsolePhoneBook
         }
         #endregion
 
+        public void ReadSerial()
+        {
+            if (File.Exists("j.dat"))
+            {
+                FileStream rs = new FileStream("j.dat", FileMode.Open);
+                BinaryFormatter serializer = new BinaryFormatter();
+                infoStorage = (PhoneInfo[])serializer.Deserialize(rs);
+
+                foreach (PhoneInfo info in infoStorage)
+                {
+                    if (info == null)
+                    {
+                        break;
+                    }
+                    Console.WriteLine(info.Name);
+                }
+                rs.Close();
+            }
+        }
+
+        public void SaveSerial()
+        {
+
+            FileStream fs = new FileStream("j.dat", FileMode.Create);
+            BinaryFormatter serializer = new BinaryFormatter();
+            serializer.Serialize(fs, infoStorage);
+           
+            fs.Close();
+
+
+        }
 
         public void ShowMenu()
         {
@@ -50,51 +85,51 @@ namespace ConsolePhoneBook
             int choice = int.Parse(Console.ReadLine().Trim());
 
             //필수항목들 무조건 실행
-            
-             Console.Write("이름: ");
-             string name = Console.ReadLine().Trim();
-             //if (name == "") or if (name.Length < 1) or if (name.Equals(""))
-             if (string.IsNullOrEmpty(name))
+
+            Console.Write("이름: ");
+            string name = Console.ReadLine().Trim();
+            //if (name == "") or if (name.Length < 1) or if (name.Equals(""))
+            if (string.IsNullOrEmpty(name))
+            {
+                Console.WriteLine("이름은 필수입력입니다");
+                return;
+            }
+            else
+            {
+                int dataIdx = SearchName(name);
+                if (dataIdx > -1)
                 {
-                    Console.WriteLine("이름은 필수입력입니다");
+                    Console.WriteLine("이미 등록된 이름입니다. 다른 이름으로 입력하세요");
                     return;
                 }
-             else
-                {
-                    int dataIdx = SearchName(name);
-                    if (dataIdx > -1)
-                        {
-                            Console.WriteLine("이미 등록된 이름입니다. 다른 이름으로 입력하세요");
-                            return;
-                        }
-                }
-             
-             Console.Write("전화번호: ");
-             string phone = Console.ReadLine().Trim();
-             if (string.IsNullOrEmpty(phone))
-                {
-                    Console.WriteLine("전화번호는 필수입력입니다");
-                    return;
-                }
-             
-             Console.Write("생일: ");
-             string birth = Console.ReadLine().Trim();
+            }
 
-             if (birth.Length < 1)
-                 infoStorage[curCnt++] = new PhoneInfo(name, phone);
-             else
-               infoStorage[curCnt++] = new PhoneInfo(name, phone, birth);
+            Console.Write("전화번호: ");
+            string phone = Console.ReadLine().Trim();
+            if (string.IsNullOrEmpty(phone))
+            {
+                Console.WriteLine("전화번호는 필수입력입니다");
+                return;
+            }
 
-             if (choice == 1) 
-                {
-                    PhoneInfo regularfriend = new PhoneInfo(name, phone, birth);
-                    regularfriend.ShowPhoneInfo(); 
-                }       
-           
+            Console.Write("생일: ");
+            string birth = Console.ReadLine().Trim();
+
+            if (birth.Length < 1)
+                infoStorage[curCnt++] = new PhoneInfo(name, phone);
+            else
+                infoStorage[curCnt++] = new PhoneInfo(name, phone, birth);
+
+            if (choice == 1)
+            {
+                PhoneInfo regularfriend = new PhoneInfo(name, phone, birth);
+                regularfriend.ShowPhoneInfo();
+            }
 
 
-            if(choice == 2)
-            { 
+
+            if (choice == 2)
+            {
                 Console.Write("전공을 입력하세요: ");
                 string major = Console.ReadLine().Trim();
 
@@ -103,15 +138,15 @@ namespace ConsolePhoneBook
                     Console.WriteLine("전공은 필수입력입니다");
                     return;
                 }
-                
+
                 Console.Write("학번을 입력하세요 : ");
                 string year = Console.ReadLine().Trim();
-                
+
                 if (string.IsNullOrEmpty(year))      //말도 안되는 학번 걸러내기
-                    {
+                {
                     Console.WriteLine("학번은 필수입력입니다.");
                     return;
-                    }
+                }
 
                 PhoneUnivInfo collegeFriend = new PhoneUnivInfo(name, phone, birth, major, year);
                 collegeFriend.ShowPhoneInfo();
@@ -138,9 +173,10 @@ namespace ConsolePhoneBook
                 }
                 PhoneCompanyInfo companyFriend = new PhoneCompanyInfo(name, phone, birth, department, company);
                 companyFriend.ShowPhoneInfo();
-            }
+            } 
         }
         
+
         public void ListData()
         {
             if (curCnt == 0)

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsolePhoneBook
 {
+    [Serializable]
     public class PhoneInfo
     {
         string name;        //필수
@@ -46,6 +49,8 @@ namespace ConsolePhoneBook
             Console.WriteLine("birth : " + this.birth);
             Console.WriteLine();
         }
+
+       
     }
 
     public class PhoneUnivInfo : PhoneInfo
