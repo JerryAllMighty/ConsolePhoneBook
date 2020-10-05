@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ConsolePhoneBook
-{    
+{
     public class PhoneBookManager
     {
         public override string ToString()
@@ -17,14 +17,15 @@ namespace ConsolePhoneBook
             return str;
         }
 
-        const int MAX_CNT = 100;
-        PhoneInfo[] infoStorage = new PhoneInfo[MAX_CNT];
-        int curCnt = 0;
-      
         
+        List<PhoneInfo> infoStorage = new List<PhoneInfo>();
+        
+
+
 
         public string Hobby { get; set; }
         public string Food { get; set; }
+           
         #region 생성자
         public PhoneBookManager()
         {
@@ -44,7 +45,7 @@ namespace ConsolePhoneBook
             {
                 FileStream rs = new FileStream("j.dat", FileMode.Open);
                 BinaryFormatter serializer = new BinaryFormatter();
-                infoStorage = (PhoneInfo[])serializer.Deserialize(rs);
+                infoStorage = (List<PhoneInfo>)serializer.Deserialize(rs);
 
                 foreach (PhoneInfo info in infoStorage)
                 {
@@ -64,7 +65,7 @@ namespace ConsolePhoneBook
             FileStream fs = new FileStream("j.dat", FileMode.Create);
             BinaryFormatter serializer = new BinaryFormatter();
             serializer.Serialize(fs, infoStorage);
-           
+
             fs.Close();
 
 
@@ -116,14 +117,19 @@ namespace ConsolePhoneBook
             string birth = Console.ReadLine().Trim();
 
             if (birth.Length < 1)
-                infoStorage[curCnt++] = new PhoneInfo(name, phone);
+                infoStorage.Add(new PhoneInfo(name, phone));
+
             else
-                infoStorage[curCnt++] = new PhoneInfo(name, phone, birth);
+                infoStorage.Add(new PhoneInfo(name, phone, birth)) ;
 
             if (choice == 1)
             {
-                PhoneInfo regularfriend = new PhoneInfo(name, phone, birth);
-                regularfriend.ShowPhoneInfo();
+                //PhoneInfo regularfriend = new PhoneInfo(name, phone, birth);
+                //regularfriend.ShowPhoneInfo();        기존에 썼던 방법. 입력 후 입력되었다는 것을 확인시켜주는 문구
+                foreach (PhoneInfo str in infoStorage)
+                {
+                    Console.WriteLine($"입력되었습니다. 이름은 {str.Name}, 전화번호는 {str.PhoneNumber}, 생일은{str.Birth}입니다");
+                }
             }
 
 
@@ -150,6 +156,10 @@ namespace ConsolePhoneBook
 
                 PhoneUnivInfo collegeFriend = new PhoneUnivInfo(name, phone, birth, major, year);
                 collegeFriend.ShowPhoneInfo();
+               
+                infoStorage.Add(collegeFriend);      //값으로 가져와서 거기다가붙이라고?
+
+                
             }
 
             else if (choice == 3)
@@ -173,19 +183,21 @@ namespace ConsolePhoneBook
                 }
                 PhoneCompanyInfo companyFriend = new PhoneCompanyInfo(name, phone, birth, department, company);
                 companyFriend.ShowPhoneInfo();
-            } 
+
+                infoStorage.Add(companyFriend);
+            }
         }
-        
+
 
         public void ListData()
         {
-            if (curCnt == 0)
+            if (infoStorage.Count == 0)
             {
                 Console.WriteLine("입력된 데이터가 없습니다.");
                 return;
             }
 
-            for (int i = 0; i < curCnt; i++)
+            for (int i = 0; i < infoStorage.Count; i++)
             {
                 infoStorage[i].ShowPhoneInfo();
             }
@@ -231,7 +243,7 @@ namespace ConsolePhoneBook
             Console.Write("이름: ");
             string name = Console.ReadLine().Trim().Replace(" ", "");
 
-            for (int i = 0; i < curCnt; i++)
+            for (int i = 0; i < infoStorage.Count; i++)
             {
                 if (infoStorage[i].Name.Replace(" ", "").CompareTo(name) == 0)
                 {
@@ -244,7 +256,7 @@ namespace ConsolePhoneBook
 
         private int SearchName(string name)
         {
-            for (int i = 0; i < curCnt; i++)
+            for (int i = 0; i < infoStorage.Count; i++)
             {
                 if (infoStorage[i].Name.Replace(" ", "").CompareTo(name) == 0)
                 {
@@ -254,7 +266,7 @@ namespace ConsolePhoneBook
 
             return -1;
         }
-
+            
         public void DeleteData()
         {
             Console.WriteLine("주소록 삭제를 시작합니다......");
@@ -266,11 +278,12 @@ namespace ConsolePhoneBook
             }
             else
             {
-                for (int i = dataIdx; i < curCnt; i++)
-                {
-                    infoStorage[i] = infoStorage[i + 1];
-                }
-                curCnt--;
+                infoStorage.RemoveAt(dataIdx); 
+                //for (int i = dataIdx; i < infoStorage.Count; i++)
+                //{
+                //    infoStorage[i] = infoStorage[i + 1];
+                //}
+               // infoStorage.Count--;
                 Console.WriteLine("주소록 삭제가 완료되었습니다");
             }
         }

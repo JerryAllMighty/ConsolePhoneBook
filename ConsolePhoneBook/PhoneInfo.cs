@@ -18,6 +18,7 @@ namespace ConsolePhoneBook
 
         public string Name { get { return name; } }
         public string PhoneNumber { get { return phonenumber; } }
+        public string Birth { get { return birth; }}
 
 
         public PhoneInfo()
@@ -50,14 +51,15 @@ namespace ConsolePhoneBook
             Console.WriteLine();
         }
 
-       
+        
     }
 
     public class PhoneUnivInfo : PhoneInfo
     {
         string major;
         string year;
-
+        public string Major { get { return major; } }
+        public string Year { get {return year; } }
 
         public PhoneUnivInfo(string name, string phonenumber, string birth, string major, string year) : base(name, phonenumber, birth)
         {
@@ -66,10 +68,12 @@ namespace ConsolePhoneBook
 
         }
 
+       
+
         //오버라이드
         public override void ShowPhoneInfo()
         {
-            base.ShowPhoneInfo();
+            
             Console.WriteLine($"전공은 {major}이고, 학번은 {year}입니다.");
 
         }
