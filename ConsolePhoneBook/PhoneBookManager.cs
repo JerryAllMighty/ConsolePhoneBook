@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,12 +17,6 @@ namespace ConsolePhoneBook
             string str = $@"취미는 {this.Hobby}이고, 좋아하는 음식은 {this.Food}입니다.";
             return str;
         }
-
-        
-        List<PhoneInfo> infoStorage = new List<PhoneInfo>();
-        
-
-
 
         public string Hobby { get; set; }
         public string Food { get; set; }
@@ -38,6 +33,8 @@ namespace ConsolePhoneBook
             this.Food = food;
         }
         #endregion
+
+        List<PhoneInfo> infoStorage = new List<PhoneInfo>();
 
         public void ReadSerial()
         {
@@ -116,16 +113,18 @@ namespace ConsolePhoneBook
             Console.Write("생일: ");
             string birth = Console.ReadLine().Trim();
 
-            if (birth.Length < 1)
-                infoStorage.Add(new PhoneInfo(name, phone));
-
-            else
-                infoStorage.Add(new PhoneInfo(name, phone, birth)) ;
+            
 
             if (choice == 1)
             {
                 //PhoneInfo regularfriend = new PhoneInfo(name, phone, birth);
                 //regularfriend.ShowPhoneInfo();        기존에 썼던 방법. 입력 후 입력되었다는 것을 확인시켜주는 문구
+                if (birth.Length < 1)
+                    infoStorage.Add(new PhoneInfo(name, phone));
+
+                else
+                    infoStorage.Add(new PhoneInfo(name, phone, birth));
+
                 foreach (PhoneInfo str in infoStorage)
                 {
                     Console.WriteLine($"입력되었습니다. 이름은 {str.Name}, 전화번호는 {str.PhoneNumber}, 생일은{str.Birth}입니다");
@@ -136,6 +135,7 @@ namespace ConsolePhoneBook
 
             if (choice == 2)
             {
+
                 Console.Write("전공을 입력하세요: ");
                 string major = Console.ReadLine().Trim();
 
@@ -154,10 +154,13 @@ namespace ConsolePhoneBook
                     return;
                 }
 
-                PhoneUnivInfo collegeFriend = new PhoneUnivInfo(name, phone, birth, major, year);
-                collegeFriend.ShowPhoneInfo();
-               
-                infoStorage.Add(collegeFriend);      //값으로 가져와서 거기다가붙이라고?
+                if (birth.Length < 1)
+                    infoStorage.Add((PhoneInfo)new PhoneUnivInfo(name, phone, major, year));
+
+                else
+                    infoStorage.Add((PhoneInfo)new PhoneUnivInfo(name, phone, birth, major, year));
+
+                 
 
                 
             }
@@ -181,10 +184,14 @@ namespace ConsolePhoneBook
                     Console.WriteLine("회사는 필수입력입니다");
                     return;
                 }
-                PhoneCompanyInfo companyFriend = new PhoneCompanyInfo(name, phone, birth, department, company);
-                companyFriend.ShowPhoneInfo();
 
-                infoStorage.Add(companyFriend);
+                
+
+                if (birth.Length < 1)
+                    infoStorage.Add((PhoneInfo)new PhoneCompanyInfo(name, phone, department, company));
+
+                else
+                    infoStorage.Add((PhoneInfo)new PhoneCompanyInfo(name, phone, birth, department, company));
             }
         }
 

@@ -44,13 +44,14 @@ namespace ConsolePhoneBook
 
         public virtual void ShowPhoneInfo()
         {
-            Console.WriteLine("name : " + this.name);
-            Console.WriteLine("phonenumber : " + this.phonenumber);
-            if (birth != null)
-            Console.WriteLine("birth : " + this.birth);
             Console.WriteLine();
+            Console.WriteLine("이름은 : " + this.name);
+            Console.WriteLine("전화번호는 : " + this.phonenumber);
+            if (birth != null)
+            Console.WriteLine("생일은 : " + this.birth);
+            
         }
-
+          
         
     }
 
@@ -60,6 +61,13 @@ namespace ConsolePhoneBook
         string year;
         public string Major { get { return major; } }
         public string Year { get {return year; } }
+
+        public PhoneUnivInfo(string name, string phonenumber, string major, string year) : base(name, phonenumber)
+        {
+            this.major = major;
+            this.year = year;
+
+        }
 
         public PhoneUnivInfo(string name, string phonenumber, string birth, string major, string year) : base(name, phonenumber, birth)
         {
@@ -73,7 +81,7 @@ namespace ConsolePhoneBook
         //오버라이드
         public override void ShowPhoneInfo()
         {
-            
+            base.ShowPhoneInfo();
             Console.WriteLine($"전공은 {major}이고, 학번은 {year}입니다.");
 
         }
@@ -86,7 +94,12 @@ namespace ConsolePhoneBook
         string department;
         string company;
 
-        
+        public PhoneCompanyInfo(string name, string phonenumber, string department, string company) : base(name, phonenumber)
+        {
+            this.department = department;
+            this.company = company;
+        }
+
         public PhoneCompanyInfo(string name, string phonenumber, string birth, string department, string company) : base(name, phonenumber, birth)
         {
             this.department = department;
